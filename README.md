@@ -15,4 +15,4 @@ How this works!
 
 This script connect to API MongoDB Atlas downloading all metrick from ReplikaSet and sending it to Zabbix Serwer through zabbix_sender.
 Script on output gives server names, and you have to add that names to Zabbix Server. 
-I useed CRON because trigger dowloading metrics for all serwers in ReplikaSet, otherwise in one minutes you got N-triggers where N is number of nodes in your ReplikaSet
+I useed CRON because trigger dowloading metrics for all nodes in ReplikaSet, otherwise in one minutes you got N-triggers where N is number of nodes in your ReplikaSet
