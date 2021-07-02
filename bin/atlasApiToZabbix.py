@@ -6,6 +6,7 @@
 
 import requests
 from requests.auth import HTTPDigestAuth
+from requests import Request, Session
 import json
 from collections import namedtuple
 import time
@@ -17,11 +18,12 @@ projectid='your projectID'
 keypub='genereted public key'
 keypriv='generated private key'
 
+s = requests.Session()
 
 # cluster information
 def clusterInfo():
     url = 'https://cloud.mongodb.com/api/atlas/v1.0/groups/' + projectid + '/clusters?pretty=true'
-    response = requests.get(url, auth=HTTPDigestAuth(keypub, keypriv))
+    response = s.get(url, auth=HTTPDigestAuth(keypub, keypriv))
 
     cluster = json.dumps(response.json())
     x = json.loads(cluster, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -33,7 +35,7 @@ def clusterInfo():
 # server replikaset information
 def replikaSetInfo():
     url = 'https://cloud.mongodb.com/api/atlas/v1.0/groups/' + projectid + '/processes'
-    response = requests.get(url, auth=HTTPDigestAuth(keypub, keypriv))
+    response = s.get(url, auth=HTTPDigestAuth(keypub, keypriv))
 
     dbs = json.dumps(response.json())
     x = json.loads(dbs, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -49,7 +51,7 @@ def replikaSetInfo():
 # lists ip:port replikasetu
 def dblist():
     url = 'https://cloud.mongodb.com/api/atlas/v1.0/groups/' + projectid + '/processes?pretty=true'
-    response = requests.get(url, auth=HTTPDigestAuth(keypub, keypriv))
+    response = s.get(url, auth=HTTPDigestAuth(keypub, keypriv))
 
     lists = []
     dbs = json.dumps(response.json())
@@ -63,7 +65,7 @@ def dblist():
 def serverStats():
     for db in dblist():
         url = 'https://cloud.mongodb.com/api/atlas/v1.0/groups/' + projectid + '/processes/' + db + '/measurements?granularity=PT5M&period=PT5M'
-        response = requests.get(url, auth=HTTPDigestAuth(keypub, keypriv))
+        response = s.get(url, auth=HTTPDigestAuth(keypub, keypriv))
 
         data = json.dumps(response.json())
         x = json.loads(data, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -78,7 +80,7 @@ def serverStats():
 def diskList():
     for db in dblist():
         url = 'https://cloud.mongodb.com/api/atlas/v1.0/groups/' + projectid + '/processes/' + db + '/disks'
-        response = requests.get(url, auth=HTTPDigestAuth(keypub, keypriv))
+        response = s.get(url, auth=HTTPDigestAuth(keypub, keypriv))
 
         dLists = []
         disk = json.dumps(response.json())
@@ -92,7 +94,7 @@ def diskStatus():
     for db in dblist():
         for disk in diskList():
             url = 'https://cloud.mongodb.com/api/atlas/v1.0/groups/' + projectid + '/processes/' + db + '/disks/' + disk + '/measurements?granularity=PT5M&period=PT5M'
-            response = requests.get(url, auth=HTTPDigestAuth(keypub, keypriv))
+            response = s.get(url, auth=HTTPDigestAuth(keypub, keypriv))
 
             data = json.dumps(response.json())
             x = json.loads(data, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
