@@ -1,8 +1,7 @@
 #!/usr/bin/python3.8
 
+# date: 2021-06-21
 # author: Mirek Sosna
-# contact: mirek.sosna@gmail.com
-
 
 import requests
 from requests.auth import HTTPDigestAuth
